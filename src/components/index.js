@@ -1,40 +1,83 @@
-import '../styles/index.css'
-// .src/pages/index.css
 
-import {initialCards} from './cards'
+import "../styles/index.css"
+import { initialCards } from "./cards"
+import { closeModal, openModal, setCloseModalEventListeners } from "./modal"
+import { likeCard, deleteCard, createCard, renderCards } from "./card"
 
-// @todo: Темплейт карточки
-const cardTemplate = document.querySelector('#card-template').content.querySelector('.places__item')
+const placesWrap = document.querySelector(".places__list")
+const modalEdit = document.querySelector(".popup_type_edit")
 
-// @todo: DOM узлы
-const placesList = document.querySelector('.places__list')
+const cardFormModal = document.querySelector(".popup_type_new-card")
+const cardForm = cardFormModal.querySelector(".popup__form")
+const cardNameInput = cardForm.querySelector(".popup__input_type_card-name")
+const cardLinkInput = cardForm.querySelector(".popup__input_type_url")
+const openCardFormButton = document.querySelector(".profile__add-button")
 
-// @todo: Функция создания карточки
-const createCard = (data, handleDelete) => {
-    const card = cardTemplate.cloneNode(true)
-    const image = card.querySelector('.card__image')
-    const title = card.querySelector('.card__title');
-    const deleteButton = card.querySelector('.card__delete-button')
+const imageModal = document.querySelector(".popup_type_image")
+const image = imageModal.querySelector(".popup__image")
+const imageCaption = imageModal.querySelector(".popup__caption")
 
-    image.src = data.link
-    image.alt = data.name
-    title.textContent = data.name;
+const profile = document.querySelector(".profile")
+const profileForm = modalEdit.querySelector(".popup__form")
+const profileTitle = profile.querySelector(".profile__title")
+const profileDescription = profile.querySelector(".profile__description")
+const openProfileFormButton = document.querySelector(".profile__edit-button")
+const nameInput = profileForm.querySelector(".popup__input_type_name")
+const descriptionInput = profileForm.querySelector(".popup__input_type_description")
 
-    deleteButton.addEventListener('click', handleDelete)
-
-    return card
+const handlePreview = (item) => { 
+    image.src = item.link
+    image.alt = item.name
+    imageCaption.textContent = item.name
+    openModal(imageModal)
 }
 
-// @todo: Функция удаления карточки
-const deleteCard = (event) => {
-    event.target.closest('.card').remove()
+const handleProfileFormSubmit = (evt) => {
+    evt.preventDefault()
+    profileTitle.textContent = nameInput.value
+    profileDescription.textContent = descriptionInput.value
+    closeModal(modalEdit)
 }
 
-// @todo: Вывести карточки на страницу
-const renderCards = (cards, place) => {
-    cards.forEach((cardData) => {
-        place.append(createCard(cardData, deleteCard))
-    })
+const handleCardFormSubmit = (evt) => { 
+    evt.preventDefault()
+    placesWrap.prepend(
+        createCard({
+            name: cardNameInput.value,
+            link: cardLinkInput.value,
+        },
+        {
+            onPreview: handlePreview,
+            onLike: likeCard,
+            onDelete: deleteCard,
+        })
+    )
+    closeModal(cardFormModal)
+    cardForm.reset()
 }
 
-renderCards(initialCards, placesList)
+setCloseModalEventListeners(modalEdit)
+
+setCloseModalEventListeners(cardFormModal) 
+
+setCloseModalEventListeners(imageModal)
+
+profileForm.addEventListener("submit", handleProfileFormSubmit)
+
+cardForm.addEventListener("submit", handleCardFormSubmit)
+
+openProfileFormButton.addEventListener("click", () => {     
+    nameInput.value = profileTitle.textContent
+    descriptionInput.value = profileDescription.textContent
+    openModal(modalEdit)
+})
+
+openCardFormButton.addEventListener("click", () => { 
+    openModal(cardFormModal)
+})
+
+renderCards(initialCards, placesWrap, {
+    onPreview: handlePreview,
+    onLike: likeCard,
+    onDelete: deleteCard,
+})
