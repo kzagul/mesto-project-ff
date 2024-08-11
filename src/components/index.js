@@ -2,7 +2,7 @@
 import "../styles/index.css"
 import { initialCards } from "./cards"
 import { closeModal, openModal, setCloseModalEventListeners } from "./modal"
-import { likeCard, deleteCard, createCard, renderCards } from "./card"
+import { likeCard, deleteCard, createCard } from "./card"
 
 const placesWrap = document.querySelector(".places__list")
 const modalEdit = document.querySelector(".popup_type_edit")
@@ -75,6 +75,14 @@ openProfileFormButton.addEventListener("click", () => {
 openCardFormButton.addEventListener("click", () => { 
     openModal(cardFormModal)
 })
+
+const renderCards = (cards, place, handlers) => {
+    cards.forEach((data) => {
+        place.append(
+            createCard (data, handlers)
+        )
+    })
+}
 
 renderCards(initialCards, placesWrap, {
     onPreview: handlePreview,

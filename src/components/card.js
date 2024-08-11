@@ -42,18 +42,9 @@ const createCard = (
     return card
 };
 
-const renderCards = (cards, place, handlers) => {
-    cards.forEach((data) => {
-        place.append(
-            createCard (data, handlers)
-        )
-    })
-}
-
 export {
     likeCard,
     deleteCard,
     getTemplate,
     createCard,
-    renderCards
 }
