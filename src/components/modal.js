@@ -9,24 +9,22 @@ const openModal = (modal) => {
   modal.classList.add("popup_is-opened")
   document.addEventListener("keyup", handleEscape)
 }
-  
+
 const closeModal = (modal) => { 
   modal.classList.remove("popup_is-opened")
   document.removeEventListener("keyup", handleEscape)
 }
 
-const setCloseModalEventListeners = (modal) => { 
-  const closeButtonElement = modal.querySelector(".popup__close")
-  closeButtonElement.addEventListener("click", () => {
-    closeModal(modal)
+const setCloseModalEventListeners = () => {
+  const popups = document.querySelectorAll(".popup")
+  popups.forEach((popup) => {
+    popup.addEventListener("click", (event) => {
+      if (event.target === popup || event.target.classList.contains("popup__close")) {
+        closeModal(popup)
+      }
+    })
   })
-
-  modal.addEventListener("click", (evt) => { 
-    if (evt.target.classList.contains("popup")) {
-      closeModal(modal)
-    }
-  })
-}
+} 
 
 export {
   openModal,
