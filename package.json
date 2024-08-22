@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack serve",
-    "build": "rm -rf dist && webpack --mode production",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "build": "rm -rf dist && webpack --mode production"
   },
   "author": "Kirill Zagul",
   "license": "ISC",
