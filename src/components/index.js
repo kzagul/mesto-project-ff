@@ -1,5 +1,5 @@
 import "../styles/index.css"
-import { createCard } from "./card"
+import { createCard, handleLikeCard } from "./card"
 import { closeModal, openModal, setCloseModalEventListeners } from "./modal"
 import { enableValidation, clearValidation } from "./validation"
 import {
@@ -73,9 +73,9 @@ const handleProfileFormSubmit = (evt) => {
   evt.preventDefault()
   renderLoading(true, modalEditProfile)
   editProfile({ name: nameInput.value, about: descriptionInput.value })
-    .then(() => {
-      profileTitle.textContent = nameInput.value
-      profileDescription.textContent = descriptionInput.value
+    .then((data) => {
+      profileTitle.textContent = data.name
+      profileDescription.textContent = data.about
       closeModal(modalEditProfile)
     })
     .catch((error) => console.error("Произошла ошибка:", error))
@@ -97,7 +97,8 @@ const handleCardFormSubmit = (evt) => {
           userId,
           { 
             onPreview: handlePreview,
-            onDelete: openDeleteForm
+            onDelete: openDeleteForm,
+            onLike: handleLikeCard
           }
         )
       )
@@ -193,6 +194,7 @@ Promise.all([getUser(), getCards()])
           {
             onPreview: handlePreview,
             onDelete: openDeleteForm,
+            onLike: handleLikeCard
           }
         )
       )

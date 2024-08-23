@@ -1,6 +1,6 @@
 import { likeCard, dislikeCard } from "./api"
 
-const handleLikeCard = (likeButton, cardId, likesCount) => {
+export const handleLikeCard = (likeButton, cardId, likesCount) => {
   const likeAction = likeButton.classList.contains("card__like-button_is-active") 
     ? dislikeCard 
     : likeCard
@@ -24,7 +24,7 @@ const getTemplate = () => {
 export const createCard = (
   data,
   userId,
-  { onPreview, onDelete }
+  { onPreview, onDelete, onLike }
 ) => {
   const card =  getTemplate()
   const image = card.querySelector(".card__image")
@@ -45,19 +45,19 @@ export const createCard = (
   if (data.owner._id !== userId) {
     deleteButton.disabled = true
     deleteButton.style.display = "none"
+  } else if (onDelete) {
+    deleteButton.addEventListener("click", () => {
+      onDelete(card, data._id)
+    })
   }
 
   if (data.likes.some((user) => user._id === userId)) {
     likeButton.classList.add("card__like-button_is-active")
   }
 
-  likeButton.addEventListener("click", () => {
-    handleLikeCard(likeButton, data._id, likesCount)
-  })
-
-  if (onDelete) {
-    deleteButton.addEventListener("click", () => {
-      onDelete(card, data._id)
+  if (onLike) {
+    likeButton.addEventListener("click", () => {
+      onLike(likeButton, data._id, likesCount)
     })
   }
 
